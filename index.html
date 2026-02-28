@@ -1,0 +1,686 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="theme-color" content="#0F172A" />
+    <title>Muhammad Naeem Ullah • Full Stack Web Developer</title>
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap"
+      rel="stylesheet"
+    />
+    <!-- Bootstrap 5 -->
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+      integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN"
+      crossorigin="anonymous"
+    />
+    <!-- Bootstrap Icons -->
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css"
+      rel="stylesheet"
+    />
+    <!-- Font Awesome -->
+    <link
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
+      rel="stylesheet"
+    />
+    <!-- AOS -->
+    <link
+      href="https://unpkg.com/aos@2.3.4/dist/aos.css"
+      rel="stylesheet"
+    />
+    <!-- App CSS -->
+    <link rel="stylesheet" href="assets/css/style.css" />
+  </head>
+  <body>
+    <!-- Custom Cursor -->
+    <div id="cursor"></div>
+    <!-- Page Loader (rebuilt) -->
+    <div id="preloader" aria-hidden="true">
+      <div class="loader-content">
+        <h1 class="logo">MNU</h1>
+        <div class="spinner" aria-hidden="true"></div>
+      </div>
+    </div>
+
+    <!-- Scroll Progress -->
+    <div id="scroll-progress"></div>
+
+    <!-- Navbar -->
+    <nav id="navbar" class="navbar navbar-expand-lg navbar-dark fixed-top py-3">
+      <div class="container d-flex align-items-center justify-content-between">
+        <a class="navbar-brand fw-semibold" href="#home">
+          Muhammad Naeem Ullah
+        </a>
+        <button
+          id="hamburger"
+          class="hamburger navbar-toggler border-0 d-lg-none"
+          type="button"
+          data-bs-toggle="collapse"
+          data-bs-target="#navMenu"
+          aria-controls="navMenu"
+          aria-expanded="false"
+          aria-label="Toggle navigation"
+        >
+          <span></span><span></span><span></span>
+        </button>
+        <div class="collapse navbar-collapse justify-content-end" id="navMenu">
+          <ul class="navbar-nav align-items-lg-center gap-lg-1 ms-lg-3">
+            <li class="nav-item"><a class="nav-link" href="#home">Home</a></li>
+            <li class="nav-item"><a class="nav-link" href="#about">About</a></li>
+            <li class="nav-item"><a class="nav-link" href="#skills">Skills</a></li>
+            <li class="nav-item"><a class="nav-link" href="#services">Services</a></li>
+            <li class="nav-item"><a class="nav-link" href="#projects">Projects</a></li>
+            <li class="nav-item"><a class="nav-link" href="#education">Education</a></li>
+            <li class="nav-item"><a class="nav-link" href="#contact">Contact</a></li>
+          </ul>
+        </div>
+      </div>
+    </nav>
+
+    <!-- Hero (rebuilt) -->
+    <section id="home" class="hero">
+      <div class="hero-gradient"></div>
+      <span class="floating-shape f1" aria-hidden="true"></span>
+      <span class="floating-shape f2" aria-hidden="true"></span>
+      <div class="container">
+        <div class="hero-left">
+          <span class="intro">Hi, I'm</span>
+          <h1 class="name">Muhammad Naeem Ullah</h1>
+          <h2 class="title">Full Stack Web Developer</h2>
+          <p class="skills-line">HTML | CSS | JavaScript | Bootstrap | PHP | MySQL</p>
+          <div class="hero-buttons">
+            <a href="assets/cv/Muhammad Naeem Ullah.pdf" download class="btn-primary ripple">Download CV</a>
+            <a href="#contact" class="btn-secondary ripple">Hire Me</a>
+            <a href="#projects" class="btn-secondary ripple">View Projects</a>
+          </div>
+        </div>
+        <div class="hero-right">
+          <div class="image-box">
+            <img src="assets/images/profile.jpeg" alt="Profile Image">
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- About -->
+    <section id="about" class="section-padding">
+      <div class="container">
+        <div class="row g-4 align-items-center">
+          <div class="col-12 col-md-5" data-aos="fade-right">
+            <div class="profile-card glass-card text-center p-4">
+              <div class="profile-photo mb-3">
+                <img
+                  src="assets/images/profile00.jpeg"
+                  alt="Profile placeholder"
+                  class="img-fluid rounded-4 shadow"
+                />
+              </div>
+              <ul class="list-unstyled text-soft small mb-0">
+                <li class="mb-1"><i class="bi bi-geo-alt me-2"></i>Site Town, Karachi, Pakistan</li>
+                <li class="mb-1">
+                  <i class="bi bi-telephone me-2"></i>
+                  <a href="tel:+923012145423" class="link-soft">+92 301 2145423</a>
+                </li>
+                <li class="mb-1">
+                  <i class="bi bi-envelope me-2"></i>
+                  <a href="mailto:m.naeemchohan05@gmail.com" class="link-soft">m.naeemchohan05@gmail.com</a>
+                </li>
+                <li>
+                  <i class="bi bi-linkedin me-2"></i>
+                  <a href="https://www.linkedin.com/in/muhammad-naeem-ullah-b6274b376" target="_blank" rel="noopener" class="link-soft">
+                    LinkedIn Profile
+                  </a>
+                </li>
+              </ul>
+            </div>
+          </div>
+          <div class="col-12 col-md-7" data-aos="fade-left">
+            <h2 class="section-title" data-aos="fade-up">About Me</h2>
+            <p class="text-soft">
+              I am a Web Developer passionate about building modern, scalable, and user-focused applications. I am currently studying ADSE at Aptech Site Center (3rd semester), continuously building technical and practical skills.
+              I build responsive, modern websites using HTML, CSS, JavaScript, Bootstrap, PHP, Laravel, and MySQL. I also have WordPress experience and basic knowledge of SEO and C#.
+            </p>
+            <div class="row g-3 mt-4">
+              <div class="col-6 col-lg-4">
+                <div class="counter-card glass-card p-3 text-center">
+                  <div class="counter h2 mb-0" data-counter-target="8">0</div>
+                  <div class="text-soft small">Projects Completed</div>
+                </div>
+              </div>
+              <div class="col-6 col-lg-4">
+                <div class="counter-card glass-card p-3 text-center">
+                  <div class="counter h2 mb-0" data-counter-target="14">0</div>
+                  <div class="text-soft small">Technologies Learned</div>
+                </div>
+              </div>
+              <div class="col-12 col-lg-4">
+                <div class="counter-card glass-card p-3 text-center">
+                  <div class="counter h2 mb-1" data-counter-target="60">0</div>
+                  <div class="text-soft small">Semester Progress (%)</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Sections are ordered: home → about → skills → services → projects → education → contact; other utility sections (why/tech/stats/objective) are not linked in navbar -->
+
+    <!-- Why Choose Me -->
+    <section id="why" class="section-padding">
+      <div class="container">
+        <h2 class="section-title" data-aos="fade-up">Why Choose Me</h2>
+        <div class="row g-4 mt-2">
+          <div class="col-12 col-md-6 col-lg-4" data-aos="fade-right">
+            <div class="why-card glass-card p-4">
+              <i class="fa-solid fa-check-circle text-accent me-2"></i><span>Clean & Modern Code</span>
+            </div>
+          </div>
+          <div class="col-12 col-md-6 col-lg-4" data-aos="fade-up">
+            <div class="why-card glass-card p-4">
+              <i class="fa-solid fa-mobile-screen text-accent me-2"></i><span>Responsive & Mobile Friendly</span>
+            </div>
+          </div>
+          <div class="col-12 col-md-6 col-lg-4" data-aos="fade-left">
+            <div class="why-card glass-card p-4">
+              <i class="fa-solid fa-gauge-high text-accent me-2"></i><span>Fast Performance</span>
+            </div>
+          </div>
+          <div class="col-12 col-md-6 col-lg-4" data-aos="fade-right">
+            <div class="why-card glass-card p-4">
+              <i class="fa-solid fa-brain text-accent me-2"></i><span>Problem-Solving Approach</span>
+            </div>
+          </div>
+          <div class="col-12 col-md-6 col-lg-4" data-aos="fade-up">
+            <div class="why-card glass-card p-4">
+              <i class="fa-solid fa-seedling text-accent me-2"></i><span>Continuous Learning Mindset</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Tech Stack -->
+    <section id="tech" class="section-padding">
+      <div class="container">
+        <h2 class="section-title" data-aos="fade-up">Technologies I Use</h2>
+        <div class="tech-grid mt-3" data-aos="zoom-in">
+          <div class="tech-item"><i class="fa-brands fa-html5"></i><span>HTML5</span></div>
+          <div class="tech-item"><i class="fa-brands fa-css3-alt"></i><span>CSS3</span></div>
+          <div class="tech-item"><i class="fa-brands fa-js"></i><span>JavaScript</span></div>
+          <div class="tech-item"><i class="fa-brands fa-bootstrap"></i><span>Bootstrap</span></div>
+          <div class="tech-item"><i class="fa-brands fa-php"></i><span>PHP</span></div>
+          <div class="tech-item"><i class="fa-brands fa-laravel"></i><span>Laravel</span></div>
+          <div class="tech-item"><i class="fa-brands fa-microsoft"></i><span>ASP.NET</span></div>
+          <div class="tech-item"><i class="fa-solid fa-database"></i><span>MySQL</span></div>
+          <div class="tech-item"><i class="fa-solid fa-database"></i><span>SQL Server</span></div>
+          <div class="tech-item"><i class="fa-brands fa-wordpress"></i><span>WordPress</span></div>
+          <div class="tech-item"><i class="fa-solid fa-code"></i><span>C#</span></div>
+          <div class="tech-item"><i class="fa-brands fa-windows"></i><span>C# WinForms</span></div>
+        </div>
+      </div>
+      <div class="section-divider wave-bottom" aria-hidden="true">
+        <svg viewBox="0 0 1440 120" preserveAspectRatio="none">
+          <path d="M0,80 C320,130 640,30 960,80 C1180,115 1330,100 1440,80 L1440,0 L0,0 Z"></path>
+        </svg>
+      </div>
+    </section>
+
+    <!-- Statistics -->
+    <section id="stats" class="section-padding">
+      <div class="container">
+        <h2 class="section-title" data-aos="fade-up">Statistics</h2>
+        <div class="row g-3 mt-2">
+          <div class="col-6 col-lg-3" data-aos="zoom-in">
+            <div class="counter-card glass-card p-4 text-center">
+              <div class="counter h2 mb-0" data-counter-target="10">0</div>
+              <div class="text-soft small">Projects</div>
+            </div>
+          </div>
+          <div class="col-6 col-lg-3" data-aos="zoom-in" data-aos-delay="50">
+            <div class="counter-card glass-card p-4 text-center">
+              <div class="counter h2 mb-0" data-counter-target="8">0</div>
+              <div class="text-soft small">Technologies</div>
+            </div>
+          </div>
+          <div class="col-6 col-lg-3" data-aos="zoom-in" data-aos-delay="100">
+            <div class="counter-card glass-card p-4 text-center">
+              <div class="counter h2 mb-0" data-counter-target="2">0</div>
+              <div class="text-soft small">Major Academic Projects</div>
+            </div>
+          </div>
+          <div class="col-6 col-lg-3" data-aos="zoom-in" data-aos-delay="150">
+            <div class="counter-card glass-card p-4 text-center">
+              <div class="counter h2 mb-0" data-counter-target="3">0</div>
+              <div class="text-soft small">Semesters Completed</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Skills -->
+    <section id="skills" class="section-padding">
+      <div class="container">
+        <h2 class="section-title" data-aos="fade-up">Skills</h2>
+        <div class="row g-4 mt-2">
+          <div class="col-12 col-lg-6" data-aos="fade-up" data-aos-delay="50">
+            <div class="glass-card p-4 h-100">
+              <h5 class="mb-3">Frontend Development</h5>
+              <div class="skill">
+                <div class="d-flex justify-content-between">
+                  <span>HTML</span><span class="skill-value">90%</span>
+                </div>
+                <div class="progress skill-bar"><div class="progress-bar" role="progressbar" data-skill="90"></div></div>
+              </div>
+              <div class="skill">
+                <div class="d-flex justify-content-between">
+                  <span>CSS</span><span class="skill-value">85%</span>
+                </div>
+                <div class="progress skill-bar"><div class="progress-bar" role="progressbar" data-skill="85"></div></div>
+              </div>
+              <div class="skill">
+                <div class="d-flex justify-content-between">
+                  <span>JavaScript</span><span class="skill-value">75%</span>
+                </div>
+                <div class="progress skill-bar"><div class="progress-bar" role="progressbar" data-skill="75"></div></div>
+              </div>
+              <div class="skill">
+                <div class="d-flex justify-content-between">
+                  <span>Bootstrap</span><span class="skill-value">80%</span>
+                </div>
+                <div class="progress skill-bar"><div class="progress-bar" role="progressbar" data-skill="80"></div></div>
+              </div>
+              <div class="skill">
+                <div class="d-flex justify-content-between">
+                  <span>Responsive Web Design</span><span class="skill-value">85%</span>
+                </div>
+                <div class="progress skill-bar"><div class="progress-bar" role="progressbar" data-skill="85"></div></div>
+              </div>
+            </div>
+          </div>
+          <div class="col-12 col-lg-6" data-aos="fade-up" data-aos-delay="100">
+            <div class="glass-card p-4 h-100">
+              <h5 class="mb-3">Backend Development</h5>
+              <div class="skill">
+                <div class="d-flex justify-content-between">
+                  <span>PHP</span><span class="skill-value">70%</span>
+                </div>
+                <div class="progress skill-bar"><div class="progress-bar" role="progressbar" data-skill="70"></div></div>
+              </div>
+              <div class="skill">
+                <div class="d-flex justify-content-between">
+                  <span>Laravel</span><span class="skill-value">65%</span>
+                </div>
+                <div class="progress skill-bar"><div class="progress-bar" role="progressbar" data-skill="65"></div></div>
+              </div>
+              <div class="skill">
+                <div class="d-flex justify-content-between">
+                  <span>RESTful APIs</span><span class="skill-value">65%</span>
+                </div>
+                <div class="progress skill-bar"><div class="progress-bar" role="progressbar" data-skill="65"></div></div>
+              </div>
+              <div class="skill">
+                <div class="d-flex justify-content-between">
+                  <span>CRUD Application Development</span><span class="skill-value">75%</span>
+                </div>
+                <div class="progress skill-bar"><div class="progress-bar" role="progressbar" data-skill="75"></div></div>
+              </div>
+              <div class="skill">
+                <div class="d-flex justify-content-between">
+                  <span>Authentication Systems</span><span class="skill-value">60%</span>
+                </div>
+                <div class="progress skill-bar"><div class="progress-bar" role="progressbar" data-skill="60"></div></div>
+              </div>
+              <div class="skill">
+                <div class="d-flex justify-content-between">
+                  <span>Role-Based Access Control</span><span class="skill-value">60%</span>
+                </div>
+                <div class="progress skill-bar"><div class="progress-bar" role="progressbar" data-skill="60"></div></div>
+              </div>
+              <div class="skill">
+                <div class="d-flex justify-content-between">
+                  <span>Database Integration</span><span class="skill-value">70%</span>
+                </div>
+                <div class="progress skill-bar"><div class="progress-bar" role="progressbar" data-skill="70"></div></div>
+              </div>
+              <div class="skill">
+                <div class="d-flex justify-content-between">
+                  <span>Server-Side Validation</span><span class="skill-value">65%</span>
+                </div>
+                <div class="progress skill-bar"><div class="progress-bar" role="progressbar" data-skill="65"></div></div>
+              </div>
+            </div>
+          </div>
+
+          <div class="col-12 col-lg-6" data-aos="fade-up" data-aos-delay="150">
+            <div class="glass-card p-4 h-100">
+              <h5 class="mb-3">Database & CMS</h5>
+              <div class="skill">
+                <div class="d-flex justify-content-between">
+                  <span>MySQL</span><span class="skill-value">70%</span>
+                </div>
+                <div class="progress skill-bar"><div class="progress-bar" role="progressbar" data-skill="70"></div></div>
+              </div>
+              <div class="skill">
+                <div class="d-flex justify-content-between">
+                  <span>SQL Server</span><span class="skill-value">55%</span>
+                </div>
+                <div class="progress skill-bar"><div class="progress-bar" role="progressbar" data-skill="55"></div></div>
+              </div>
+              <div class="skill">
+                <div class="d-flex justify-content-between">
+                  <span>WordPress (Theme Customization & CMS Management)</span><span class="skill-value">60%</span>
+                </div>
+                <div class="progress skill-bar"><div class="progress-bar" role="progressbar" data-skill="60"></div></div>
+              </div>
+            </div>
+          </div>
+
+          <div class="col-12 col-lg-6" data-aos="fade-up" data-aos-delay="200">
+            <div class="glass-card p-4 h-100">
+              <h5 class="mb-3">Programming & Other</h5>
+              <div class="skill">
+                <div class="d-flex justify-content-between">
+                  <span>C# (Advanced Concepts)</span><span class="skill-value">60%</span>
+                </div>
+                <div class="progress skill-bar"><div class="progress-bar" role="progressbar" data-skill="60"></div></div>
+              </div>
+              <div class="skill">
+                <div class="d-flex justify-content-between">
+                  <span>ASP.NET</span><span class="skill-value">50%</span>
+                </div>
+                <div class="progress skill-bar"><div class="progress-bar" role="progressbar" data-skill="50"></div></div>
+              </div>
+              <div class="skill">
+                <div class="d-flex justify-content-between">
+                  <span>C# Windows Forms (WinForms)</span><span class="skill-value">45%</span>
+                </div>
+                <div class="progress skill-bar"><div class="progress-bar" role="progressbar" data-skill="45"></div></div>
+              </div>
+              <div class="skill">
+                <div class="d-flex justify-content-between">
+                  <span>SEO</span><span class="skill-value">55%</span>
+                </div>
+                <div class="progress skill-bar"><div class="progress-bar" role="progressbar" data-skill="55"></div></div>
+              </div>
+              <div class="skill">
+                <div class="d-flex justify-content-between">
+                  <span>Time Management</span><span class="skill-value">70%</span>
+                </div>
+                <div class="progress skill-bar"><div class="progress-bar" role="progressbar" data-skill="70"></div></div>
+              </div>
+              <div class="skill">
+                <div class="d-flex justify-content-between">
+                  <span>Problem Solving</span><span class="skill-value">65%</span>
+                </div>
+                <div class="progress skill-bar"><div class="progress-bar" role="progressbar" data-skill="65"></div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Services -->
+    <section id="services" class="section-padding">
+      <div class="container">
+        <h2 class="section-title" data-aos="fade-up">Services</h2>
+        <div class="row g-4 mt-2">
+          <div class="col-12 col-md-6 col-lg-4" data-aos="zoom-in">
+            <div class="service-card glass-card p-4 tilt">
+              <div class="icon-wrap"><i class="fa-solid fa-code"></i></div>
+              <h5 class="mt-2 mb-2">Frontend Development</h5>
+              <p class="text-soft small mb-0">Pixel-perfect UI, modern layouts, responsive interactions using HTML, CSS, JS, Bootstrap.</p>
+            </div>
+          </div>
+          <div class="col-12 col-md-6 col-lg-4" data-aos="zoom-in" data-aos-delay="50">
+            <div class="service-card glass-card p-4 tilt">
+              <div class="icon-wrap"><i class="fa-solid fa-database"></i></div>
+              <h5 class="mt-2 mb-2">Backend Development</h5>
+              <p class="text-soft small mb-0">PHP & Laravel CRUD, authentication, role-based access, and clean architecture.</p>
+            </div>
+          </div>
+          <div class="col-12 col-md-6 col-lg-4" data-aos="zoom-in" data-aos-delay="100">
+            <div class="service-card glass-card p-4 tilt">
+              <div class="icon-wrap"><i class="fa-solid fa-layer-group"></i></div>
+              <h5 class="mt-2 mb-2">Full Stack Web Apps</h5>
+              <p class="text-soft small mb-0">From database to UI—production-ready flows with performance and UX in mind.</p>
+            </div>
+          </div>
+          <div class="col-12 col-md-6 col-lg-4" data-aos="zoom-in">
+            <div class="service-card glass-card p-4 tilt">
+              <div class="icon-wrap"><i class="fa-brands fa-wordpress"></i></div>
+              <h5 class="mt-2 mb-2">WordPress Websites</h5>
+              <p class="text-soft small mb-0">Customizable themes, content structure, and basic optimization for business sites.</p>
+            </div>
+          </div>
+          <div class="col-12 col-md-6 col-lg-4" data-aos="zoom-in" data-aos-delay="50">
+            <div class="service-card glass-card p-4 tilt">
+              <div class="icon-wrap"><i class="fa-solid fa-mobile-screen-button"></i></div>
+              <h5 class="mt-2 mb-2">Responsive Design</h5>
+              <p class="text-soft small mb-0">Mobile-first strategy ensuring seamless experience across devices and breakpoints.</p>
+            </div>
+          </div>
+          <div class="col-12 col-md-6 col-lg-4" data-aos="zoom-in" data-aos-delay="100">
+            <div class="service-card glass-card p-4 tilt">
+              <div class="icon-wrap"><i class="fa-solid fa-magnifying-glass-chart"></i></div>
+              <h5 class="mt-2 mb-2">Basic SEO</h5>
+              <p class="text-soft small mb-0">Semantic markup and best practices to help websites be discoverable.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="section-divider wave-top" aria-hidden="true">
+        <svg viewBox="0 0 1440 120" preserveAspectRatio="none">
+          <path d="M0,80 C320,30 640,130 960,80 C1180,45 1330,60 1440,80 L1440,120 L0,120 Z"></path>
+        </svg>
+      </div>
+    </section>
+
+    <!-- Projects -->
+    <section id="projects" class="section-padding">
+      <div class="container">
+        <h2 class="section-title" data-aos="fade-up">Projects</h2>
+        <div class="row g-4 mt-2">
+          <!-- Project 1 -->
+          <div class="col-12 col-md-6" data-aos="fade-up" data-aos-delay="50">
+            <div class="project-card glass-card h-100 tilt">
+              <div class="project-thumb" style="background-image:url('https://images.unsplash.com/photo-1508051123996-69f8caf4891e?q=80&w=1200&auto=format&fit=crop');"></div>
+              <div class="project-content p-4">
+                <h5 class="mb-1">Historical Monuments Website</h5>
+                <p class="text-soft mb-3">
+                  Responsive informational website built using HTML, CSS, Bootstrap, and JavaScript. Focused on clean UI and user-friendly design.
+                </p>
+                <a href="#projects" class="btn btn-sm btn-gradient ripple js-project-view">
+                  <i class="bi bi-eye me-1"></i> View Details
+                </a>
+              </div>
+            </div>
+          </div>
+          <!-- Project 2 -->
+          <div class="col-12 col-md-6" data-aos="fade-up" data-aos-delay="100">
+            <div class="project-card glass-card h-100 tilt">
+              <div class="project-thumb" style="background-image:url('https://images.unsplash.com/photo-1515378791036-0648a3ef77b2?q=80&w=1200&auto=format&fit=crop');"></div>
+              <div class="project-content p-4">
+                <h5 class="mb-1">Vaccination Management System</h5>
+                <p class="text-soft mb-3">
+                  Database-driven web application using PHP, MySQL, and Laravel. Includes CRUD operations, authentication, role-based access, and hospital booking.
+                </p>
+                <a href="#projects" class="btn btn-sm btn-gradient ripple js-project-view">
+                  <i class="bi bi-eye me-1"></i> View Details
+                </a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Project Modal -->
+    <div class="modal fade" id="projectModal" tabindex="-1" aria-hidden="true">
+      <div class="modal-dialog modal-lg modal-dialog-centered">
+        <div class="modal-content glass-card">
+          <div class="modal-header">
+            <h5 class="modal-title" id="projectModalLabel">Project</h5>
+            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body">
+            <div class="project-modal-image mb-3"></div>
+            <p class="mb-0" id="projectModalDesc"></p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Education -->
+    <section id="education" class="section-padding">
+      <div class="container">
+        <h2 class="section-title" data-aos="fade-up">Education</h2>
+
+        <div class="timeline mt-4">
+          <div class="timeline-line"></div>
+
+          <div class="timeline-item" data-aos="fade-up">
+            <div class="timeline-dot"></div>
+            <div class="timeline-card glass-card">
+              <h6 class="mb-1">MUMTAZ VISION ACADEMY</h6>
+              <div class="text-soft small">Matriculation (Science) — 2022</div>
+            </div>
+          </div>
+
+          <div class="timeline-item" data-aos="fade-up">
+            <div class="timeline-dot"></div>
+            <div class="timeline-card glass-card">
+              <h6 class="mb-1">WIINER Grammar Higher Secondary School</h6>
+              <div class="text-soft small">Intermediate (Pre-Engineering) — 2023 – 2025</div>
+              <div class="text-soft small">Completed in 2025</div>
+            </div>
+          </div>
+
+          <div class="timeline-item" data-aos="fade-up" data-aos-delay="100">
+            <div class="timeline-dot"></div>
+            <div class="timeline-card glass-card">
+              <h6 class="mb-1">APTECH Computer Education</h6>
+              <div class="text-soft small">Advanced Diploma in Software Engineering — 2024 – Present</div>
+              <ul class="mt-2 text-soft small mb-0">
+                <li>Semester 1: Web Development Fundamentals</li>
+                <li>Semester 2: PHP, MySQL, Laravel</li>
+                <li>Semester 3: C# (Basic) & Advanced Concepts</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Career Objective -->
+    <section id="objective" class="section-padding">
+      <div class="container">
+        <h2 class="section-title" data-aos="fade-up">Career Objective</h2>
+        <div class="row justify-content-center">
+          <div class="col-12 col-lg-10" data-aos="zoom-in">
+            <div class="objective-card glass-card p-4 p-lg-5">
+              <p class="mb-0">
+                "To secure an opportunity in web development where I can apply my technical skills, gain industry exposure, and grow as a professional developer while preparing for higher education in Computer Science. Committed to building scalable, user-focused applications and continuously expanding my expertise in full-stack development."
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Contact -->
+    <section id="contact" class="section-padding">
+      <div class="container">
+        <h2 class="section-title" data-aos="fade-up">Contact</h2>
+        <div class="row g-4 mt-2">
+          <div class="col-12 col-lg-6" data-aos="fade-right">
+            <div class="glass-card p-4 h-100">
+              <form id="contact-form" novalidate>
+                <div class="form-floating mb-3">
+                  <input type="text" class="form-control" id="name" placeholder="Your name" required />
+                  <label for="name">Name</label>
+                </div>
+                <div class="form-floating mb-3">
+                  <input type="email" class="form-control" id="email" placeholder="name@example.com" required />
+                  <label for="email">Email address</label>
+                </div>
+                <div class="form-floating mb-3">
+                  <textarea class="form-control" placeholder="Your message" id="message" style="height: 140px" required></textarea>
+                  <label for="message">Message</label>
+                </div>
+                <button type="submit" class="btn btn-gradient w-100 ripple">
+                  <i class="bi bi-send me-2"></i> Send Message
+                </button>
+                <div id="form-success" class="alert alert-success mt-3 d-none" role="alert">
+                  <i class="bi bi-check-circle me-2"></i> Thank you! Your message has been queued locally.
+                </div>
+              </form>
+            </div>
+          </div>
+          <div class="col-12 col-lg-6" data-aos="fade-left">
+            <div class="glass-card p-4 h-100">
+              <ul class="list-unstyled mb-0">
+                <li class="mb-3">
+                  <i class="bi bi-geo-alt me-2"></i> Site Town, Karachi, Pakistan
+                </li>
+                <li class="mb-3">
+                  <i class="bi bi-telephone me-2"></i>
+                  <a href="tel:+923012145423" class="link-soft">+92 301 2145423</a>
+                </li>
+                <li class="mb-3">
+                  <i class="bi bi-envelope me-2"></i>
+                  <a href="mailto:m.naeemchohan05@gmail.com" class="link-soft">m.naeemchohan05@gmail.com</a>
+                </li>
+                <li class="mb-3">
+                  <i class="bi bi-linkedin me-2"></i>
+                  <a href="https://www.linkedin.com/in/muhammad-naeem-ullah-b6274b376" target="_blank" rel="noopener" class="link-soft">
+                    LinkedIn
+                  </a>
+                </li>
+              </ul>
+              <div class="contact-cta mt-4">
+                <a href="#projects" class="btn btn-outline-accent ripple me-2">
+                  <i class="bi bi-grid-3x3-gap me-1"></i> View Projects
+                </a>
+                <a href="mailto:m.naeemchohan05@gmail.com" class="btn btn-gradient ripple">
+                  <i class="bi bi-envelope me-1"></i> Email Me
+                </a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="py-4 border-0 position-relative">
+      <div class="container d-flex align-items-center justify-content-between">
+        <p class="mb-0 text-soft small">© 2026 Muhammad Naeem Ullah. All Rights Reserved.</p>
+        <button id="scrollTop" class="btn btn-icon ripple" aria-label="Scroll to top">
+          <i class="bi bi-arrow-up-short"></i>
+        </button>
+      </div>
+    </footer>
+
+    <!-- Scripts -->
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"
+      integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL"
+      crossorigin="anonymous"
+    ></script>
+    <script src="https://unpkg.com/aos@2.3.4/dist/aos.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
+    <script src="assets/js/main.js"></script>
+  </body>
+  </html>
+
