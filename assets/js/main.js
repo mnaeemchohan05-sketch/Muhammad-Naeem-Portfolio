@@ -1,463 +1,749 @@
-// =========================
-// Global Setup & Animations
-// =========================
-// Ensure preloader is hidden even if other scripts fail to execute
+const hidePreloader = () => {
+  const loader = document.getElementById('preloader');
+  if (!loader) return;
+  loader.classList.add('hidden');
+};
+
 window.addEventListener('load', () => {
-  try {
-    const loader = document.getElementById('preloader');
-    if (loader) loader.classList.add('hidden');
-  } catch (e) {
-    // silent
-  }
+  setTimeout(hidePreloader, 120);
 });
 
 document.addEventListener('DOMContentLoaded', () => {
   try {
-  // Navbar color change on scroll + progress bar
-  const nav = document.getElementById('navbar');
-  const progress = document.getElementById('scroll-progress');
-  const scrollTopBtn = document.getElementById('scrollTop');
-  const hamburger = document.getElementById('hamburger');
-  const navMenu = document.getElementById('navMenu');
+    // Do not block content visibility until every external asset finishes loading.
+    setTimeout(hidePreloader, 450);
 
-  const onScroll = () => {
-    const doc = document.documentElement;
-    const scrolled = (doc.scrollTop || document.body.scrollTop);
-    const height = doc.scrollHeight - doc.clientHeight;
-    const pct = Math.min(100, (scrolled / height) * 100);
-    progress.style.width = pct + '%';
-    if (nav) {
-      if (scrolled > 20) nav.classList.add('scrolled'); else nav.classList.remove('scrolled');
-    }
-    if (scrollTopBtn) scrollTopBtn.style.opacity = scrolled > 300 ? '1' : '0';
-  };
-  window.addEventListener('scroll', onScroll, { passive: true });
-  onScroll();
+    const nav = document.getElementById('navbar');
+    const progress = document.getElementById('scroll-progress');
+    const scrollTopBtn = document.getElementById('scrollTop');
+    const hamburger = document.getElementById('hamburger');
+    const navMenu = document.getElementById('navMenu');
 
-  // Smooth scroll for internal anchors using CSS scroll-margin-top for offset
-  // and `scrollIntoView` to keep behavior simple and allow native fallbacks.
-  const updateNavHeightVar = () => {
-    if (nav && nav.offsetHeight) {
-      document.documentElement.style.setProperty('--nav-height', nav.offsetHeight + 'px');
-    }
-  };
-  updateNavHeightVar();
-  window.addEventListener('resize', updateNavHeightVar);
+    const isMobile = window.matchMedia('(max-width: 767.98px)').matches;
+    const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const isFinePointer = window.matchMedia('(pointer:fine)').matches;
+    document.body.classList.add('js-ready');
 
-  document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-    anchor.addEventListener('click', (e) => {
-      if (anchor.classList.contains('js-project-view')) return; // modal triggers handled separately
-      const targetId = anchor.getAttribute('href');
-      if (targetId && targetId !== '#') {
-        const el = document.querySelector(targetId);
-        if (el) {
-          e.preventDefault();
-          el.scrollIntoView({ behavior: 'smooth' });
+    const updateNavHeightVar = () => {
+      if (!nav) return;
+      document.documentElement.style.setProperty('--nav-height', `${nav.offsetHeight || 72}px`);
+    };
+
+    updateNavHeightVar();
+    window.addEventListener('resize', updateNavHeightVar, { passive: true });
+
+    let lastY = 0;
+    let ticking = false;
+    const renderScroll = () => {
+      const doc = document.documentElement;
+      const y = window.pageYOffset || doc.scrollTop || 0;
+      const height = Math.max(1, doc.scrollHeight - doc.clientHeight);
+
+      if (progress) {
+        const pct = Math.min(100, (y / height) * 100);
+        progress.style.transform = `scaleX(${pct / 100})`;
+      }
+
+      if (nav) {
+        nav.classList.toggle('scrolled', y > 16);
+        if (navMenu && navMenu.classList.contains('show')) {
+          nav.classList.remove('nav-hide');
+        } else {
+          nav.classList.toggle('nav-hide', y > 120 && y > lastY);
         }
       }
-      // if element not found we let browser handle default (maybe anchor or noop)
-    });
-  });
 
-  // Scroll to top
-  if (scrollTopBtn) {
-    scrollTopBtn.addEventListener('click', () => window.scrollTo({ top: 0, behavior: 'smooth' }));
-  }
-
-   // Scroll spy: active section highlight
-  const navLinks = Array.from(document.querySelectorAll('a.nav-link[href^="#"]'));
-  const sections = navLinks
-    .map(l => document.querySelector(l.getAttribute('href')))
-    .filter(Boolean);
-  if (sections.length) {
-    // create moving underline indicator
-    let indicator;
-    if (nav) {
-      indicator = document.getElementById('nav-indicator') || (() => {
-        const el = document.createElement('div');
-        el.id = 'nav-indicator';
-        nav.appendChild(el);
-        return el;
-      })();
-    }
-    const positionIndicator = (link) => {
-      if (!nav || !indicator || !link) return;
-      const nr = nav.getBoundingClientRect();
-      const lr = link.getBoundingClientRect();
-      indicator.style.width = lr.width + 'px';
-      indicator.style.left = (lr.left - nr.left) + 'px';
-    };
-    const setActive = (id) => {
-      navLinks.forEach(l => {
-        const match = l.getAttribute('href') === id;
-        l.classList.toggle('active', match);
-        if (match) positionIndicator(l);
-      });
-    };
-    // Use navbar height to offset intersection root so active state accounts for fixed header
-    const navHeightForSpy = (nav && nav.offsetHeight) ? nav.offsetHeight : 70;
-    const ioSpy = new IntersectionObserver((entries) => {
-      entries.forEach(entry => {
-        if (entry.isIntersecting) {
-          setActive('#' + entry.target.id);
-        }
-      });
-    }, { rootMargin: `-${navHeightForSpy}px 0px 0px 0px`, threshold: 0.5 });
-    sections.forEach(s => ioSpy.observe(s));
-    window.addEventListener('resize', () => {
-      const active = document.querySelector('.navbar .nav-link.active');
-      if (active) positionIndicator(active);
-    });
-  }
-
-  // Hamburger animation on collapse events (mobile menu)
-  if (navMenu && hamburger && window.bootstrap) {
-    navMenu.addEventListener('shown.bs.collapse', () => hamburger.classList.add('active'));
-    navMenu.addEventListener('hidden.bs.collapse', () => hamburger.classList.remove('active'));
-  }
-
-  // Collapse mobile menu when a nav link is clicked (useful on small screens)
-  document.querySelectorAll('.nav-link[href^="#"]').forEach(link => {
-    link.addEventListener('click', () => {
-      try {
-        if (navMenu && navMenu.classList.contains('show') && window.bootstrap) {
-          const collapseInstance = bootstrap.Collapse.getInstance(navMenu) || new bootstrap.Collapse(navMenu, { toggle: false });
-          collapseInstance.hide();
-        }
-      } catch (err) {
-        // fail silently if bootstrap object isn't available
-        // (keeps behavior safe and avoids console errors)
+      if (scrollTopBtn) {
+        scrollTopBtn.classList.toggle('show', y > 320);
       }
-    });
-  });
 
-  // AOS (Animate On Scroll) - replay animations on every scroll in/out
-  const forceShowAosElements = () => {
-    try {
-      document.querySelectorAll('[data-aos]').forEach(el => {
-        el.style.opacity = '1';
-        el.style.transform = 'none';
-        el.classList.add('aos-animate');
-      });
-      document.body.classList.add('aos-fallback');
-    } catch (_) {}
-  };
-  if (window.AOS && typeof AOS.init === 'function') {
-    try {
-      AOS.init({
-        duration: 1000,
-        once: false,
-        mirror: true,
-        offset: 80,
-        easing: 'ease-out-quart',
-      });
-      setTimeout(() => {
-        const hasAnyAnimated = !!document.querySelector('.aos-animate');
-        if (!hasAnyAnimated) forceShowAosElements();
-      }, 800);
-    } catch (e) {
-      forceShowAosElements();
+      lastY = y;
+      ticking = false;
+    };
+
+    window.addEventListener(
+      'scroll',
+      () => {
+        if (ticking) return;
+        ticking = true;
+        requestAnimationFrame(renderScroll);
+      },
+      { passive: true }
+    );
+    renderScroll();
+
+    if (nav) {
+      requestAnimationFrame(() => nav.classList.add('nav-ready'));
     }
-  } else {
-    forceShowAosElements();
-  }
 
+    document.querySelectorAll('a[href^="#"]').forEach((anchor) => {
+      anchor.addEventListener('click', (e) => {
+        const href = anchor.getAttribute('href');
+        if (!href || href === '#') return;
 
-  // GSAP Page Intro Animation (aligned with current hero classes)
-  if (window.gsap) {
-    const splitWords = (el) => {
+        const target = document.querySelector(href);
+        if (!target) return;
+
+        e.preventDefault();
+        target.scrollIntoView({ behavior: prefersReducedMotion ? 'auto' : 'smooth', block: 'start' });
+      });
+    });
+
+    if (scrollTopBtn) {
+      scrollTopBtn.addEventListener('click', () => {
+        window.scrollTo({ top: 0, behavior: prefersReducedMotion ? 'auto' : 'smooth' });
+      });
+    }
+
+    if (navMenu && hamburger && window.bootstrap) {
+      navMenu.addEventListener('shown.bs.collapse', () => hamburger.classList.add('active'));
+      navMenu.addEventListener('hidden.bs.collapse', () => hamburger.classList.remove('active'));
+
+      document.querySelectorAll('.nav-link[href^="#"]').forEach((link) => {
+        link.addEventListener('click', () => {
+          if (!navMenu.classList.contains('show')) return;
+          const collapse = bootstrap.Collapse.getInstance(navMenu) || new bootstrap.Collapse(navMenu, { toggle: false });
+          collapse.hide();
+        });
+      });
+    }
+
+    const navLinks = Array.from(document.querySelectorAll('.nav-link[href^="#"]'));
+    const sections = navLinks.map((link) => document.querySelector(link.getAttribute('href'))).filter(Boolean);
+    if (sections.length) {
+      const navOffset = nav ? nav.offsetHeight : 70;
+      const spyObserver = new IntersectionObserver(
+        (entries) => {
+          entries.forEach((entry) => {
+            if (!entry.isIntersecting) return;
+            const id = `#${entry.target.id}`;
+            navLinks.forEach((link) => link.classList.toggle('active', link.getAttribute('href') === id));
+          });
+        },
+        { rootMargin: `-${navOffset}px 0px -50% 0px`, threshold: 0.14 }
+      );
+      sections.forEach((section) => spyObserver.observe(section));
+    }
+
+    const splitParagraphLines = (selector) => {
+      const p = document.querySelector(selector);
+      if (!p) return [];
+      if (p.dataset.splitDone === '1') {
+        return Array.from(p.querySelectorAll('.line'));
+      }
+      const original = p.textContent.trim().replace(/\s+/g, ' ');
+      const lines = original
+        .split('. ')
+        .map((line) => line.trim())
+        .filter(Boolean)
+        .map((line, i, arr) => (i === arr.length - 1 || line.endsWith('.') ? line : `${line}.`));
+      p.innerHTML = lines.map((line) => `<span class="line">${line}</span>`).join(' ');
+      p.dataset.splitDone = '1';
+      return Array.from(p.querySelectorAll('.line'));
+    };
+
+    const splitWords = (selector, cls) => {
+      const el = document.querySelector(selector);
       if (!el) return [];
-      const text = el.textContent.trim().split(' ');
-      el.innerHTML = text.map(w => `<span class="split-word" style="display:inline-block">${w}</span>`).join(' ');
-      return Array.from(el.querySelectorAll('.split-word'));
-    };
-    window.addEventListener('load', () => {
-      const loader = document.getElementById('preloader');
-      const nameEl = document.querySelector('.name');
-      const titleEl = document.querySelector('.title');
-      const words = [...splitWords(nameEl), ...splitWords(titleEl)];
-      const tl = gsap.timeline();
-      if (loader) {
-        tl.to(loader, { opacity: 0, duration: 0.4, ease: 'power2.out', onComplete: () => loader.classList.add('hidden') });
+      if (el.dataset.splitDone === '1') {
+        return Array.from(el.querySelectorAll(`.${cls}`));
       }
-      tl.from('.intro', { y: 16, opacity: 0, duration: 0.45, ease: 'power3.out' }, '-=0.1')
-        .from(words, { y: 20, opacity: 0, duration: 0.6, stagger: 0.05, ease: 'power2.out' }, '-=0.05')
-        .from('.skills-line', { y: 14, opacity: 0, duration: 0.45 }, '-=0.25')
-        .from('.hero-buttons a', { y: 12, opacity: 0, duration: 0.4, stagger: 0.08 }, '-=0.25')
-        .from('.image-box', { y: 18, opacity: 0, duration: 0.6, ease: 'power2.out' }, '-=0.4');
-    });
-  }
-
-  // Preloader hide when page fully loaded
-  window.addEventListener('load', () => {
-    const loader = document.getElementById('preloader');
-    if (loader) loader.classList.add('hidden');
-  });
-
-  // Animated Counters when in view (replay when re-entering viewport)
-  const counters = document.querySelectorAll('.counter');
-  if (counters.length) {
-    const animateCounter = (el) => {
-      const target = parseInt(el.getAttribute('data-counter-target') || '0', 10);
-      const duration = 1200;
-      let start = 0;
-      const startTime = performance.now();
-      const step = (now) => {
-        const progress = Math.min((now - startTime) / duration, 1);
-        const value = Math.floor(progress * target);
-        el.textContent = value.toString();
-        if (progress < 1) requestAnimationFrame(step);
-      };
-      requestAnimationFrame(step);
+      const text = el.textContent.trim().replace(/\s+/g, ' ');
+      const words = text.split(' ').filter(Boolean);
+      el.innerHTML = words.map((word) => `<span class="${cls}">${word}</span>`).join(' ');
+      el.dataset.splitDone = '1';
+      return Array.from(el.querySelectorAll(`.${cls}`));
     };
-    const io = new IntersectionObserver((entries) => {
-      entries.forEach(entry => {
-        const el = entry.target;
-        if (entry.isIntersecting) {
-          animateCounter(el);
-        } else {
-          el.textContent = '0';
+
+    const typeText = (el, fullText, startDelay, speed) => {
+      if (!el) return;
+      gsap.delayedCall(startDelay, () => {
+        el.textContent = '';
+        let idx = 0;
+        const tick = () => {
+          if (idx >= fullText.length) return;
+          idx += 1;
+          el.textContent = fullText.slice(0, idx);
+          setTimeout(tick, speed);
+        };
+        tick();
+      });
+    };
+
+    const initMagnetic = () => {
+      if (isMobile || prefersReducedMotion || !isFinePointer) return;
+      document.querySelectorAll('.hero-buttons a').forEach((btn) => {
+        btn.addEventListener('mousemove', (e) => {
+          const rect = btn.getBoundingClientRect();
+          const x = e.clientX - rect.left - rect.width / 2;
+          const y = e.clientY - rect.top - rect.height / 2;
+          gsap.to(btn, { x: x * 0.12, y: y * 0.2, duration: 0.2, ease: 'power2.out' });
+        });
+        btn.addEventListener('mouseleave', () => {
+          gsap.to(btn, { x: 0, y: 0, duration: 0.25, ease: 'power2.out' });
+        });
+      });
+    };
+
+    const initHeroParallax = () => {
+      if (isMobile || prefersReducedMotion || !isFinePointer) return;
+      const hero = document.getElementById('home');
+      if (!hero) return;
+      const gradient = hero.querySelector('.hero-gradient');
+      const image = hero.querySelector('.image-box');
+
+      hero.addEventListener('mousemove', (e) => {
+        const rect = hero.getBoundingClientRect();
+        const px = (e.clientX - rect.left) / rect.width - 0.5;
+        const py = (e.clientY - rect.top) / rect.height - 0.5;
+
+        if (gradient) {
+          gsap.to(gradient, { x: px * 12, y: py * 10, duration: 0.35, ease: 'power2.out' });
+        }
+        if (image) {
+          gsap.to(image, { x: px * 6, y: py * 5, duration: 0.35, ease: 'power2.out' });
         }
       });
-    }, { threshold: 0.5 });
-    counters.forEach(c => io.observe(c));
-  }
 
-  // Skills: animate progress bars when in view (replay on re-enter)
-  const pbs = document.querySelectorAll('.progress-bar[data-skill]');
-  if (pbs.length) {
-    const ioBars = new IntersectionObserver((entries) => {
-      entries.forEach(entry => {
-        const bar = entry.target;
-        const pct = parseInt(bar.getAttribute('data-skill') || '0', 10);
-        const valEl = bar.closest('.skill') ? bar.closest('.skill').querySelector('.skill-value') : null;
-        if (entry.isIntersecting) {
-          bar.style.width = pct + '%';
-          if (valEl) {
-            const startTime = performance.now();
-            const duration = 1000;
-            const step = (now) => {
-              const t = Math.min((now - startTime) / duration, 1);
-              const v = Math.floor(t * pct);
-              valEl.textContent = v + '%';
-              if (t < 1) requestAnimationFrame(step);
-            };
-            requestAnimationFrame(step);
-          }
-        } else {
-          bar.style.width = '0%';
-          if (valEl) valEl.textContent = '0%';
-        }
+      hero.addEventListener('mouseleave', () => {
+        if (gradient) gsap.to(gradient, { x: 0, y: 0, duration: 0.4, ease: 'power2.out' });
+        if (image) gsap.to(image, { x: 0, y: 0, duration: 0.4, ease: 'power2.out' });
       });
-    }, { threshold: 0.4 });
-    pbs.forEach(b => ioBars.observe(b));
-  }
+    };
 
-  // Parallax effect for hero shapes
-  const shapes = document.querySelectorAll('.floating-shape');
-  window.addEventListener('scroll', () => {
-    const offset = window.pageYOffset || document.documentElement.scrollTop || 0;
-    shapes.forEach((el, i) => {
-      const depth = (i + 1) * 0.04;
-      el.style.transform = `translateY(${-(offset * depth)}px)`;
-    });
-  }, { passive: true });
+    const initRipple = () => {
+      document.querySelectorAll('.ripple').forEach((el) => {
+        el.addEventListener('click', (e) => {
+          if (isMobile || el.tagName === 'A') return;
+          const rect = el.getBoundingClientRect();
+          const circle = document.createElement('span');
+          const d = Math.max(rect.width, rect.height);
+          circle.style.width = circle.style.height = `${d}px`;
+          circle.style.left = `${e.clientX - rect.left - d / 2}px`;
+          circle.style.top = `${e.clientY - rect.top - d / 2}px`;
+          circle.className = 'ripple-circle';
+          el.appendChild(circle);
+          setTimeout(() => circle.remove(), 520);
+        });
+      });
+    };
 
-  // Project "View Details" modal handler
-  document.querySelectorAll('.js-project-view').forEach(btn => {
-    btn.addEventListener('click', (e) => {
-      e.preventDefault();
-      e.stopImmediatePropagation();
-      const card = btn.closest('.project-card');
-      if (!card) return;
-      const title = (card.querySelector('h5') && card.querySelector('h5').textContent.trim()) || 'Project';
-      const desc = (card.querySelector('p') && card.querySelector('p').textContent.trim()) || '';
-      const thumb = card.querySelector('.project-thumb');
-      let imgUrl = '';
-      if (thumb) {
-        const bg = getComputedStyle(thumb).backgroundImage || '';
-        const start = bg.indexOf('url(');
-        const end = bg.lastIndexOf(')');
-        if (start !== -1 && end !== -1) imgUrl = bg.slice(start + 4, end).replace(/["']/g, '');
-      }
-      const modal = document.getElementById('projectModal');
-      if (modal && window.bootstrap) {
-        const label = modal.querySelector('#projectModalLabel');
-        const bodyDesc = modal.querySelector('#projectModalDesc');
-        const imageBox = modal.querySelector('.project-modal-image');
-        if (label) label.textContent = title;
-        if (bodyDesc) bodyDesc.textContent = desc;
-        if (imageBox) imageBox.style.backgroundImage = imgUrl ? `url('${imgUrl}')` : 'none';
-        const bsModal = new bootstrap.Modal(modal);
-        bsModal.show();
-      } else {
-        const target = document.querySelector('#projects');
-        if (target) {
-          const navHeight = (nav && nav.offsetHeight) ? nav.offsetHeight : 70;
-          const yOffset = -navHeight;
-          const y = target.getBoundingClientRect().top + window.pageYOffset + yOffset;
-          window.scrollTo({ top: y, behavior: 'smooth' });
-        }
-      }
-    });
-  });
-  // Button ripple effect
-  document.querySelectorAll('.ripple').forEach(btn => {
-    btn.addEventListener('click', function (e) {
-      const rect = this.getBoundingClientRect();
-      const circle = document.createElement('span');
-      const d = Math.max(rect.width, rect.height);
-      circle.style.width = circle.style.height = d + 'px';
-      circle.style.left = (e.clientX - rect.left - d / 2) + 'px';
-      circle.style.top = (e.clientY - rect.top - d / 2) + 'px';
-      circle.classList.add('ripple-circle');
-      this.appendChild(circle);
-      setTimeout(() => circle.remove(), 600);
-    });
-  });
+    const initCursor = () => {
+      const cursor = document.getElementById('cursor');
+      if (!cursor) return;
 
-  // Contact form (client-side success animation only)
-  const form = document.getElementById('contact-form');
-  if (form) {
-    form.addEventListener('submit', (e) => {
-      e.preventDefault();
-      if (!form.checkValidity()) {
-        form.classList.add('was-validated');
+      if (isMobile || prefersReducedMotion || !isFinePointer) {
+        cursor.style.display = 'none';
         return;
       }
-      const success = document.getElementById('form-success');
-      if (success) {
-        success.classList.remove('d-none');
-        success.style.opacity = '0';
-        requestAnimationFrame(() => {
-          success.style.transition = 'opacity .4s ease';
-          success.style.opacity = '1';
+
+      let x = window.innerWidth / 2;
+      let y = window.innerHeight / 2;
+      let targetX = x;
+      let targetY = y;
+      let rafId = 0;
+
+      const render = () => {
+        x += (targetX - x) * 0.22;
+        y += (targetY - y) * 0.22;
+        cursor.style.transform = `translate3d(${x}px, ${y}px, 0) translate(-50%, -50%)`;
+        rafId = requestAnimationFrame(render);
+      };
+
+      const onMove = (e) => {
+        targetX = e.clientX;
+        targetY = e.clientY;
+        if (!rafId) {
+          rafId = requestAnimationFrame(render);
+        }
+      };
+
+      window.addEventListener('mousemove', onMove, { passive: true });
+
+      document
+        .querySelectorAll('a, button, .btn, input, textarea, .service-card, .project-card')
+        .forEach((el) => {
+          el.addEventListener('mouseenter', () => cursor.classList.add('cursor-active'));
+          el.addEventListener('mouseleave', () => cursor.classList.remove('cursor-active'));
         });
-        setTimeout(() => {
-          success.style.opacity = '0';
-          setTimeout(() => success.classList.add('d-none'), 400);
-        }, 2500);
-      }
-      form.reset();
-    });
-  }
-
-  // (Particles.js not used now - hero uses animated blue gradient background)
-
-  // Custom cursor (desktop only)
-  const cursor = document.getElementById('cursor');
-  if (cursor && window.matchMedia('(pointer:fine)').matches) {
-    let x = 0, y = 0;
-    const follow = (e) => {
-      x = e.clientX; y = e.clientY;
-      const scale = cursor.classList.contains('cursor-active') ? 1.3 : 1;
-      cursor.style.transform = `translate(${x}px, ${y}px) translate(-50%,-50%) scale(${scale})`;
     };
-    window.addEventListener('mousemove', follow, { passive: true });
-    window.addEventListener('mousedown', () => {
-      const scale = cursor.classList.contains('cursor-active') ? 1.4 : 1.2;
-      cursor.style.transform = `translate(${x}px, ${y}px) translate(-50%,-50%) scale(${scale})`;
-    });
-    window.addEventListener('mouseup', () => {
-      const scale = cursor.classList.contains('cursor-active') ? 1.3 : 1;
-      cursor.style.transform = `translate(${x}px, ${y}px) translate(-50%,-50%) scale(${scale})`;
-    });
-    document.querySelectorAll('a, button, .btn, [role="button"]').forEach(el => {
-      el.addEventListener('mouseenter', () => cursor.classList.add('cursor-active'));
-      el.addEventListener('mouseleave', () => cursor.classList.remove('cursor-active'));
-    });
-  } else if (cursor) {
-    cursor.style.display = 'none';
-  }
 
-  // 3D tilt effect on cards (desktop only)
-  if (window.matchMedia('(pointer:fine)').matches) {
-    const tiltEls = document.querySelectorAll('.tilt');
-    tiltEls.forEach(el => {
-      const rect = () => el.getBoundingClientRect();
-      const enter = () => el.style.transition = 'transform .1s ease-out';
-      const leave = () => {
-        el.style.transition = 'transform .4s ease';
-        el.style.transform = 'rotateX(0) rotateY(0)';
-      };
-      const move = (e) => {
-        const r = rect();
-        const px = (e.clientX - r.left) / r.width - 0.5;
-        const py = (e.clientY - r.top) / r.height - 0.5;
-        const rx = (-py * 10).toFixed(2);
-        const ry = (px * 12).toFixed(2);
-        el.style.transform = `rotateX(${rx}deg) rotateY(${ry}deg)`;
-      };
-      el.addEventListener('mouseenter', enter);
-      el.addEventListener('mousemove', move);
-      el.addEventListener('mouseleave', leave);
-    });
-  }
+    const initForm = () => {
+      const form = document.getElementById('contact-form');
+      const submitBtn = document.getElementById('contact-submit');
+      const successBox = document.getElementById('form-success');
+      const errorBox = document.getElementById('form-error');
+      if (!form) return;
 
-  if (window.gsap && window.ScrollTrigger) {
-    gsap.registerPlugin(ScrollTrigger);
-    const revealEls = gsap.utils.toArray('#about .glass-card, #skills .glass-card, #services .service-card, #projects .project-card, #education .timeline, #objective .objective-card, #contact .glass-card, #tech .tech-item, #stats .counter-card');
-    revealEls.forEach((el) => {
-      gsap.from(el, {
-        y: 24,
-        opacity: 0,
-        scale: 0.98,
-        duration: 0.7,
-        ease: 'power2.out',
-        scrollTrigger: {
-          trigger: el,
-          start: 'top 85%',
-          toggleActions: 'play none none reset'
+      const safeJson = async (response) => {
+        try {
+          return await response.json();
+        } catch (_) {
+          return null;
         }
-      });
-    });
-    const titles = gsap.utils.toArray('.section-title');
-    titles.forEach((t) => {
-      gsap.from(t, {
-        y: 18,
-        opacity: 0,
-        duration: 0.6,
-        ease: 'power2.out',
-        scrollTrigger: {
-          trigger: t,
-          start: 'top 90%',
-          toggleActions: 'play none none reset'
+      };
+
+      const isConfiguredValue = (value, options = {}) => {
+        const raw = String(value || '').trim();
+        if (!raw) return false;
+        const normalized = raw.toLowerCase();
+        const placeholderTokens = ['your_', 'your-', 'your ', 'example', 'changeme', 'replace', '<', '>', '{', '}'];
+        if (placeholderTokens.some((token) => normalized.includes(token))) return false;
+        if (options.isFormspreeEndpoint) {
+          return /^https:\/\/.+/i.test(raw);
         }
-      });
-    });
-  }
+        return true;
+      };
 
-  const timeline = document.querySelector('.timeline');
-  if (timeline) {
-    const ioT = new IntersectionObserver((entries) => {
-      entries.forEach(e => {
-        if (e.isIntersecting) timeline.classList.add('animate'); else timeline.classList.remove('animate');
-      });
-    }, { threshold: 0.3 });
-    ioT.observe(timeline);
-  }
+      const showMessage = (type, message) => {
+        if (successBox) successBox.classList.add('d-none');
+        if (errorBox) errorBox.classList.add('d-none');
 
-  let lastY = 0;
-  const onScrollNav = () => {
-    const y = window.pageYOffset || document.documentElement.scrollTop || 0;
-    const down = y > lastY;
-    if (nav) {
-      if (navMenu && navMenu.classList.contains('show')) {
-        nav.classList.remove('nav-hide');
-      } else {
-        if (down && y > 120) nav.classList.add('nav-hide'); else nav.classList.remove('nav-hide');
+        const node = type === 'success' ? successBox : errorBox;
+        if (!node) return;
+
+        node.textContent = message;
+        node.classList.remove('d-none');
+        if (window.gsap) {
+          gsap.fromTo(node, { autoAlpha: 0, y: 8 }, { autoAlpha: 1, y: 0, duration: 0.28, ease: 'power2.out' });
+        }
+      };
+
+      const isNativeFormSubmitMode =
+        /formsubmit\.co/i.test(form.getAttribute('action') || '') &&
+        (form.getAttribute('method') || 'get').toLowerCase() === 'post';
+
+      if (isNativeFormSubmitMode) {
+        // Native FormSubmit mode keeps delivery backend-free and avoids fetch/CORS/provider-chain issues.
+        // We remove `novalidate` so browser validation runs before the form is sent.
+        form.removeAttribute('novalidate');
+
+        form.addEventListener('submit', (e) => {
+          const nameInput = document.getElementById('name');
+          const emailInput = document.getElementById('email');
+          const messageInput = document.getElementById('message');
+
+          if (nameInput) nameInput.value = nameInput.value.trim();
+          if (emailInput) emailInput.value = emailInput.value.trim();
+          if (messageInput) messageInput.value = messageInput.value.trim();
+
+          if (!form.checkValidity()) {
+            e.preventDefault();
+            form.classList.add('was-validated');
+            showMessage('error', 'Please complete all required fields correctly.');
+            return;
+          }
+
+          if (successBox) successBox.classList.add('d-none');
+          if (errorBox) errorBox.classList.add('d-none');
+          if (submitBtn) {
+            submitBtn.disabled = true;
+            submitBtn.setAttribute('aria-busy', 'true');
+          }
+        });
+
+        return;
       }
-    }
-    if (scrollTopBtn) {
-      if (y > 300) scrollTopBtn.classList.add('show'); else scrollTopBtn.classList.remove('show');
-    }
-    lastY = y;
-  };
-  window.addEventListener('scroll', onScrollNav, { passive: true });
-  onScrollNav();
-  } catch (err) {
-    // Prevent script errors from stopping page rendering
-    // Log to console for debugging but keep UI visible
-    console.error('Error in main DOMContentLoaded handler:', err);
+
+      const serviceId = form.dataset.emailjsService || '';
+      const templateId = form.dataset.emailjsTemplate || '';
+      const publicKey = form.dataset.emailjsPublicKey || '';
+      const formspreeEndpoint = form.dataset.formspreeEndpoint || '';
+      const backendEndpoint = form.dataset.backendEndpoint || '';
+      const formsubmitEmail = form.dataset.formsubmitEmail || '';
+      const emailjsConfigured =
+        isConfiguredValue(serviceId) &&
+        isConfiguredValue(templateId) &&
+        isConfiguredValue(publicKey);
+      const formspreeConfigured = isConfiguredValue(formspreeEndpoint, { isFormspreeEndpoint: true });
+      const backendConfigured = isConfiguredValue(backendEndpoint) && (backendEndpoint.startsWith('/') || /^https?:\/\//i.test(backendEndpoint));
+      const formsubmitConfigured = isConfiguredValue(formsubmitEmail) && formsubmitEmail.includes('@');
+
+      if (emailjsConfigured && window.emailjs && typeof window.emailjs.init === 'function') {
+        window.emailjs.init({ publicKey });
+      }
+
+      form.addEventListener('submit', async (e) => {
+        e.preventDefault();
+
+        const nameInput = document.getElementById('name');
+        const emailInput = document.getElementById('email');
+        const messageInput = document.getElementById('message');
+
+        if (nameInput) nameInput.value = nameInput.value.trim();
+        if (emailInput) emailInput.value = emailInput.value.trim();
+        if (messageInput) messageInput.value = messageInput.value.trim();
+
+        if (!form.checkValidity()) {
+          form.classList.add('was-validated');
+          showMessage('error', 'Please complete all required fields correctly.');
+          return;
+        }
+
+        if (submitBtn) {
+          submitBtn.disabled = true;
+          submitBtn.setAttribute('aria-busy', 'true');
+        }
+
+        const params = {
+          from_name: (nameInput?.value || '').trim(),
+          reply_to: (emailInput?.value || '').trim(),
+          message: (messageInput?.value || '').trim(),
+          sent_at: new Date().toLocaleString('en-US', {
+            year: 'numeric',
+            month: 'long',
+            day: 'numeric',
+            hour: '2-digit',
+            minute: '2-digit',
+          }),
+        };
+
+        try {
+          // Provider chain keeps delivery resilient across static hosting environments.
+          const providers = [];
+
+          if (backendConfigured) {
+            providers.push({
+              name: 'Backend',
+              send: async () => {
+                const response = await fetch(backendEndpoint, {
+                  method: 'POST',
+                  headers: {
+                    'Content-Type': 'application/json',
+                    Accept: 'application/json',
+                  },
+                  body: JSON.stringify({
+                    name: params.from_name,
+                    email: params.reply_to,
+                    message: params.message,
+                    sent_at: params.sent_at,
+                  }),
+                });
+                const data = await safeJson(response);
+                const successFlag = data?.success ?? data?.ok;
+                if (!response.ok || successFlag === false || successFlag === 'false') {
+                  throw new Error('Backend submission failed');
+                }
+              },
+            });
+          }
+
+          if (emailjsConfigured && window.emailjs && typeof window.emailjs.send === 'function') {
+            providers.push({
+              name: 'EmailJS',
+              send: async () => {
+                await window.emailjs.send(serviceId, templateId, params);
+              },
+            });
+          }
+
+          if (formspreeConfigured) {
+            providers.push({
+              name: 'Formspree',
+              send: async () => {
+                const response = await fetch(formspreeEndpoint, {
+                  method: 'POST',
+                  headers: {
+                    'Content-Type': 'application/json',
+                    Accept: 'application/json',
+                  },
+                  body: JSON.stringify({
+                    name: params.from_name,
+                    email: params.reply_to,
+                    message: params.message,
+                    sent_at: params.sent_at,
+                  }),
+                });
+                const data = await safeJson(response);
+                const successFlag = data?.ok ?? data?.success;
+                const explicitlyFailed =
+                  successFlag === false ||
+                  successFlag === 'false' ||
+                  (Array.isArray(data?.errors) && data.errors.length > 0);
+                if (!response.ok || explicitlyFailed) {
+                  throw new Error('Formspree submission failed');
+                }
+              },
+            });
+          }
+
+          if (formsubmitConfigured) {
+            providers.push({
+              name: 'FormSubmit',
+              send: async () => {
+                const response = await fetch(`https://formsubmit.co/ajax/${encodeURIComponent(formsubmitEmail)}`, {
+                  method: 'POST',
+                  headers: {
+                    'Content-Type': 'application/json',
+                    Accept: 'application/json',
+                  },
+                  body: JSON.stringify({
+                    name: params.from_name,
+                    email: params.reply_to,
+                    message: params.message,
+                    _subject: 'Portfolio Contact Message',
+                    _captcha: 'false',
+                    sent_at: params.sent_at,
+                  }),
+                });
+                const data = await safeJson(response);
+                const successFlag = data?.success;
+                const explicitlyFailed = successFlag === false || successFlag === 'false';
+                if (!response.ok || explicitlyFailed) {
+                  throw new Error('FormSubmit delivery failed');
+                }
+              },
+            });
+          }
+
+          if (!providers.length) {
+            throw new Error('No form provider configured');
+          }
+
+          let sent = false;
+          const providerErrors = [];
+          for (const provider of providers) {
+            try {
+              await provider.send();
+              sent = true;
+              break;
+            } catch (providerError) {
+              providerErrors.push(`${provider.name}: ${providerError?.message || 'failed'}`);
+            }
+          }
+
+          if (!sent) {
+            throw new Error(providerErrors.join(' | ') || 'All providers failed');
+          }
+
+          form.reset();
+          form.classList.remove('was-validated');
+          showMessage('success', 'Thank you! Your message has been sent successfully.');
+        } catch (error) {
+          const details = error?.message ? ` (${error.message})` : '';
+          showMessage('error', `Message could not be sent right now. Please verify your form provider setup.${details}`);
+          console.error('Email send error:', error);
+        } finally {
+          if (submitBtn) {
+            submitBtn.disabled = false;
+            submitBtn.removeAttribute('aria-busy');
+          }
+        }
+      });
+    };
+
+    const initGsap = () => {
+      if (!window.gsap) return;
+      const gsap = window.gsap;
+      const ScrollTrigger = window.ScrollTrigger;
+      if (ScrollTrigger) gsap.registerPlugin(ScrollTrigger);
+
+      const ease = 'power2.out';
+      const heroMaster = gsap.timeline({ defaults: { ease, duration: isMobile ? 0.35 : 0.55 } });
+
+      const introEl = document.querySelector('.intro');
+      const nameEl = document.querySelector('.name');
+      const titleEl = document.querySelector('.title');
+      const introText = introEl ? introEl.textContent.trim() : '';
+      const nameText = nameEl ? nameEl.textContent.trim() : '';
+      const titleText = titleEl ? titleEl.textContent.trim() : '';
+
+      if (!prefersReducedMotion) {
+        heroMaster
+          .from('.intro', { y: 14, opacity: 0 }, 0)
+          .from('.name', { y: 14, opacity: 0 }, 0.06)
+          .from('.title', { y: 14, opacity: 0 }, 0.12)
+          .from('.skills-line', { y: 12, opacity: 0 }, 0.2)
+          .from('.hero-buttons a', { y: 10, opacity: 0, stagger: 0.14 }, 0.24)
+          .from('.image-box', { y: 14, opacity: 0 }, 0.14)
+          .from('.scroll-indicator', { autoAlpha: 0, y: 8, duration: 0.35 }, 0.55);
+
+        typeText(introEl, introText, 0.08, isMobile ? 24 : 18);
+        typeText(nameEl, nameText, 0.36, isMobile ? 18 : 14);
+        typeText(titleEl, titleText, 0.9, isMobile ? 20 : 15);
+      }
+
+      if (!isMobile && !prefersReducedMotion) {
+        gsap.to('.image-box', {
+          y: -6,
+          repeat: -1,
+          yoyo: true,
+          duration: 3.2,
+          ease: 'sine.inOut',
+        });
+      }
+
+      const aboutLines = splitParagraphLines('.about-copy');
+      const objectiveWords = splitWords('#objective .objective-card p', 'objective-word');
+
+      // Use fromTo to avoid elements getting stuck at opacity:0 on refresh/re-init.
+      const makeReveal = (targets, vars = {}, triggerStart = 'top 90%') => {
+        if (!ScrollTrigger || prefersReducedMotion) return;
+        const list = gsap.utils.toArray(targets);
+        if (!list.length) return;
+        const { stagger: customStagger, ...restVars } = vars;
+
+        ScrollTrigger.batch(list, {
+          start: triggerStart,
+          once: true,
+          onEnter: (batch) => {
+            gsap.fromTo(
+              batch,
+              { y: 16, autoAlpha: 0 },
+              {
+                y: 0,
+                autoAlpha: 1,
+                clearProps: 'transform,opacity,visibility',
+              duration: isMobile ? 0.35 : 0.52,
+                stagger: Math.min(0.18, customStagger || 0.12),
+              ease,
+                overwrite: 'auto',
+                ...restVars,
+              }
+            );
+          },
+        });
+      };
+
+      makeReveal('.section-title');
+      makeReveal('#about .glass-card, #skills .skill-group, #services .service-card, #projects .project-card, #contact .glass-card, #why .why-card, #stats .counter-card, #objective .objective-card');
+      makeReveal('#tech .tech-item', { stagger: 0.06 }, 'top 95%');
+
+      if (ScrollTrigger && aboutLines.length && !isMobile && !prefersReducedMotion) {
+        gsap.from(aboutLines, {
+          y: 10,
+          opacity: 0,
+          duration: 0.4,
+          stagger: 0.1,
+          ease,
+          scrollTrigger: {
+            trigger: '#about',
+            start: 'top 78%',
+            once: true,
+          },
+        });
+      }
+
+      if (ScrollTrigger && objectiveWords.length && !isMobile && !prefersReducedMotion) {
+        gsap.from(objectiveWords, {
+          y: 9,
+          opacity: 0,
+          duration: 0.38,
+          stagger: 0.02,
+          ease,
+          scrollTrigger: {
+            trigger: '#objective .objective-card',
+            start: 'top 85%',
+            once: true,
+          },
+        });
+      }
+
+      const counters = gsap.utils.toArray('.counter[data-counter-target]');
+      counters.forEach((counter) => {
+        const target = Number(counter.getAttribute('data-counter-target') || 0);
+        if (!ScrollTrigger || prefersReducedMotion || isMobile) {
+          counter.textContent = String(target);
+          return;
+        }
+
+        const state = { value: 0 };
+        gsap.to(state, {
+          value: target,
+          duration: 0.85,
+          ease: 'power1.out',
+          onUpdate: () => {
+            counter.textContent = String(Math.round(state.value));
+          },
+          scrollTrigger: {
+            trigger: counter,
+            start: 'top 90%',
+            once: true,
+          },
+        });
+      });
+
+      const skillBars = gsap.utils.toArray('#skills .skill-progress-fill[data-level]');
+      skillBars.forEach((bar) => {
+        const level = Math.max(0, Math.min(100, Number(bar.getAttribute('data-level') || 0)));
+        bar.dataset.level = String(level);
+        // Keep the final width in DOM so bars remain visible even if animation is skipped.
+        bar.style.width = `${level}%`;
+      });
+
+      if (skillBars.length && ScrollTrigger && !prefersReducedMotion) {
+        ScrollTrigger.create({
+          trigger: '#skills',
+          start: 'top 84%',
+          once: true,
+          onEnter: () => {
+            gsap.fromTo(skillBars, { width: 0 }, {
+              width: (i, el) => `${el.dataset.level}%`,
+              duration: isMobile ? 0.45 : 0.68,
+              stagger: 0.05,
+              ease: 'power2.out',
+              overwrite: 'auto',
+            });
+          },
+        });
+      }
+
+      if (ScrollTrigger) {
+        ScrollTrigger.create({
+          trigger: '#education .timeline',
+          start: 'top 86%',
+          once: true,
+          onEnter: () => {
+            const timeline = document.querySelector('.timeline');
+            if (timeline) timeline.classList.add('animate');
+            gsap.from('#education .timeline-item', {
+              y: 14,
+              opacity: 0,
+              stagger: 0.12,
+              duration: 0.46,
+              ease,
+            });
+          },
+        });
+
+        ScrollTrigger.create({
+          trigger: '#contact form',
+          start: 'top 88%',
+          once: true,
+          onEnter: () => {
+            gsap.from('#contact .form-floating, #contact #contact-submit', {
+              y: 10,
+              opacity: 0,
+              stagger: 0.1,
+              duration: 0.42,
+              ease,
+            });
+          },
+        });
+
+        ScrollTrigger.refresh();
+      }
+    };
+
+    const enforceVisibilityFallback = () => {
+      document
+        .querySelectorAll(
+          '#about .counter-card, #stats .counter-card, #services .service-card, #services .col-12, #contact #contact-submit, #contact form, #about .row > div, #skills .row > div, #skills .skill-group, #skills .skill-progress-fill'
+        )
+        .forEach((el) => {
+          el.style.opacity = '1';
+          el.style.visibility = 'visible';
+        });
+    };
+
+    initCursor();
+    initMagnetic();
+    initHeroParallax();
+    initRipple();
+    initForm();
+    initGsap();
+    enforceVisibilityFallback();
+  } catch (error) {
+    console.error('Error in main DOMContentLoaded handler:', error);
   }
 });
